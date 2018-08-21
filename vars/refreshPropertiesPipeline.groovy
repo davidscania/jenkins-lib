@@ -16,7 +16,7 @@ def call(body) {
             ])
             {
 
-                clientsNode {
+                clientsK8sNode(clientsImage: 'stakater/pipeline-tools:1.11.0') {
 
                     stage("checkout") {
                         checkout scm
@@ -24,7 +24,14 @@ def call(body) {
 
                     stage("applying properties") {
                         container(name: 'clients') {
-                            sh "find . -name '*.yaml' -exec kubectl apply  -n=${nameSpace} -f {} \\;"
+                            sh """
+                                retVal=0;
+                                for yaml in \$(find . -name '*.yaml'); do
+                                  kubectl apply -n=${nameSpace} -f \$yaml;
+                                  retVal=\$((\$retVal + \$?));
+                                done;
+                                [ \$retVal -eq 0 ]
+                            """
                         }
                     }
                 }
