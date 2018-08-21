@@ -85,7 +85,7 @@ def call(body) {
                 }
 
                 stage("Upload to S3") {
-                    withAWS(role:"${ROLENAME}", roleAccount:"${ROLEACCOUNTID}",  roleSessionName: 'jenkins-upload-microfront'){
+                    withAWS(role:"${ROLE_NAME}", roleAccount:"${ROLE_ACCOUNT_ID}",  roleSessionName: 'jenkins-upload-microfront'){
                         s3Upload(file: 'lib/', bucket: "${params.BUCKET}", path: "${name}/${version}/")
                     }
                 }
